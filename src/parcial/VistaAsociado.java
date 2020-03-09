@@ -5,9 +5,16 @@
  */
 package parcial;
 
-import javax.swing.table.DefaultTableModel;
+import java.awt.Color;
+import java.util.UUID;
+import java.util.Vector;
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
+import parcial.controller.AsociadoController;
 import parcial.model.Asociado;
 import parcial.model.Cuota;
+import parcial.model.Prestamo;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -15,44 +22,24 @@ import parcial.model.Cuota;
  */
 public class VistaAsociado extends javax.swing.JFrame {
 
+    AsociadoController totalp = new AsociadoController();
+    Vector<Cuota> cTemp = new Vector();
+    Asociado a_sel = new Asociado();
+
     /**
      * Creates new form VistaAsociado
      */
     public VistaAsociado() {
         initComponents();
-        creartabla();
-        creartabla2();
+        setResizable(false);
+        setLocationRelativeTo(null);
+        //asignando datos quemados
+        quemados();
+        Listar();
     }
-    
-    public void creartabla(){
-        
-        Asociado[] asc= new Asociado[10];
-        dtma.addColumn("Identificacion");
-        dtma.addColumn("Nombre");
-        dtma.addColumn("Salario");
-        
-//        for(int i=0; i<ast)
-    }
-    
-    public void creartabla2(){
-        
-        Cuota[] ct= new Cuota[10];
-        dtmc.addColumn("NCuota");
-        dtmc.addColumn("ValorCuota");
-        dtmc.addColumn("ValorPagar");
-        dtmc.addColumn("Saldo");
-         
-        
-    }
-            
-            public void generarasociado(){
-                
-              
-                
-                
-                
-                
-            }
+   
+
+ 
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -64,33 +51,39 @@ public class VistaAsociado extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tabla1 = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tbl_asociados = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
-        btnproyectar = new javax.swing.JButton();
-        btnaprobar = new javax.swing.JButton();
+        btn_proyectar = new javax.swing.JButton();
+        btn_aprobar = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
-        jTextField5 = new javax.swing.JTextField();
+        txt_Asociado = new javax.swing.JTextField();
+        txt_valor = new javax.swing.JTextField();
+        txt_plazo = new javax.swing.JTextField();
+        txt_interes = new javax.swing.JTextField();
+        txt_valorTotal = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        jTable3 = new javax.swing.JTable();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tbl_prestamos = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-
-        tabla1.setModel(dtma);
-        jScrollPane1.setViewportView(tabla1);
+        jPanel1.addAncestorListener(new javax.swing.event.AncestorListener() {
+            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
+            }
+            public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
+                jPanel1AncestorAdded(evt);
+            }
+            public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
+            }
+        });
 
         jLabel1.setFont(new java.awt.Font("Yu Mincho Demibold", 0, 14)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 102, 102));
@@ -108,6 +101,34 @@ public class VistaAsociado extends javax.swing.JFrame {
             }
         });
 
+        tbl_asociados.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Codigo", "Nombre", "Salario"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tbl_asociados.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbl_asociadosMouseClicked(evt);
+            }
+        });
+        jScrollPane2.setViewportView(tbl_asociados);
+        if (tbl_asociados.getColumnModel().getColumnCount() > 0) {
+            tbl_asociados.getColumnModel().getColumn(0).setResizable(false);
+            tbl_asociados.getColumnModel().getColumn(1).setResizable(false);
+            tbl_asociados.getColumnModel().getColumn(2).setResizable(false);
+        }
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -119,10 +140,10 @@ public class VistaAsociado extends javax.swing.JFrame {
                         .addComponent(jLabel1))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 246, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 282, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jButton1)))
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -131,19 +152,29 @@ public class VistaAsociado extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 313, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(257, 257, 257))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(117, 117, 117)
+                        .addGap(78, 78, 78)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        btnproyectar.setText("PROYECTAR");
+        btn_proyectar.setText("PROYECTAR");
+        btn_proyectar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_proyectarActionPerformed(evt);
+            }
+        });
 
-        btnaprobar.setText("APROBAR");
+        btn_aprobar.setText("APROBAR");
+        btn_aprobar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_aprobarActionPerformed(evt);
+            }
+        });
 
         jLabel2.setText("Asociado");
 
@@ -168,19 +199,17 @@ public class VistaAsociado extends javax.swing.JFrame {
                     .addComponent(jLabel5)
                     .addComponent(jLabel6))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(txt_valor, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE)
+                    .addComponent(txt_plazo)
+                    .addComponent(txt_interes)
+                    .addComponent(txt_valorTotal)
+                    .addComponent(txt_Asociado))
+                .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE)
-                            .addComponent(jTextField3)
-                            .addComponent(jTextField4)
-                            .addComponent(jTextField5))
-                        .addGap(84, 84, 84)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnproyectar)
-                            .addComponent(btnaprobar)))
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btn_proyectar)
+                    .addComponent(btn_aprobar))
+                .addContainerGap(80, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -188,52 +217,75 @@ public class VistaAsociado extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txt_Asociado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txt_valor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3))
                 .addGap(2, 2, 2)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnproyectar)
+                    .addComponent(btn_proyectar)
                     .addComponent(jLabel4)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txt_plazo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(4, 4, 4)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(btnaprobar))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(2, 2, 2)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel5)
-                            .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel6)
-                            .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(33, Short.MAX_VALUE))
+                    .addComponent(jLabel5)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(txt_interes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btn_aprobar)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel6)
+                    .addComponent(txt_valorTotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jTable3.setModel(dtmc);
-        jScrollPane3.setViewportView(jTable3);
+        tbl_prestamos.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Ncuotas", "ValorCuota", "ValorPagar", "Saldo"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tbl_prestamos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbl_prestamosMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tbl_prestamos);
+        if (tbl_prestamos.getColumnModel().getColumnCount() > 0) {
+            tbl_prestamos.getColumnModel().getColumn(0).setResizable(false);
+            tbl_prestamos.getColumnModel().getColumn(1).setResizable(false);
+            tbl_prestamos.getColumnModel().getColumn(2).setResizable(false);
+            tbl_prestamos.getColumnModel().getColumn(3).setResizable(false);
+        }
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap(29, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -243,23 +295,23 @@ public class VistaAsociado extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(38, 38, 38)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(19, 19, 19))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(24, 24, 24)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addGap(26, 26, 26)
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -270,9 +322,219 @@ public class VistaAsociado extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1MouseClicked
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-       
-       
+
+
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jPanel1AncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_jPanel1AncestorAdded
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jPanel1AncestorAdded
+
+    private void btn_proyectarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_proyectarActionPerformed
+        try {
+            Asociado a1 = totalp.getList_asociados().get(tbl_asociados.getSelectedRow());
+
+            double valor = Double.parseDouble(txt_valor.getText());
+            double interes = Double.parseDouble(txt_interes.getText());
+            double plazo = Double.parseDouble(txt_plazo.getText());
+
+            if (plazo >= 1 && plazo <= 48) {
+                if (interes >= 1 && interes <= 8) {
+                    double valorTotal = valor + (valor * interes / 100);
+                    if ((4 * a1.getSalario()) > valorTotal) {
+                        txt_valorTotal.setText(valorTotal + "");
+                        double valorCuota = valorTotal / plazo;
+                        Prestamo p1 = new Prestamo(
+                                valor,
+                                interes,
+                                plazo,
+                                a1
+                        );
+
+                        double valorPagar = Math.round(valorTotal - valorCuota);
+
+                        totalp.cuotas((int) plazo, 0, valorPagar, Math.round(valorCuota), valorTotal, p1, cTemp);
+                        a_sel = a1;
+                        btn_aprobar.setEnabled(true);
+                    } else {
+                        JOptionPane.showMessageDialog(null, "El valor total excede 4 veces el salario del asociado");
+                        block();
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "El interes debe estar entre 1 y 8 por ciento");
+                    block();
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "El plazo debe estar entre 1 y 48 meses");
+                block();
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Ha ocurrido un error, revise sus datos");
+        }
+
+    }//GEN-LAST:event_btn_proyectarActionPerformed
+
+    private void btn_aprobarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_aprobarActionPerformed
+        totalp.igualar(0, totalp.getList_prestamos(), cTemp);
+
+        totalp.cambiarEst_prestamo(0, a_sel, "conPrestamo");
+        listar2(a_sel);
+        cTemp.clear();
+        btn_aprobar.setEnabled(false);
+        vaciar();
+        stop(false);
+
+    }//GEN-LAST:event_btn_aprobarActionPerformed
+
+    private void tbl_asociadosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbl_asociadosMouseClicked
+        vaciar();
+        a_sel = totalp.getList_asociados().get(tbl_asociados.getSelectedRow());
+        txt_Asociado.setText(a_sel.getNombre());
+        btn_proyectar.setEnabled(true);
+        if (a_sel.getEstado().equals("sinPrestamo")) {
+            stop(true);
+        } else if (a_sel.getEstado().equals("conPrestamo")) {
+            stop(false);
+        }
+        listar2(a_sel);
+
+    }//GEN-LAST:event_tbl_asociadosMouseClicked
+
+    private void tbl_prestamosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbl_prestamosMouseClicked
+         int column = tbl_prestamos.getColumnModel().getColumnIndexAtX(evt.getX());
+        int row = evt.getY() / tbl_prestamos.getRowHeight();
+
+        if (row < tbl_prestamos.getRowCount() && row >= 0 && column < tbl_prestamos.getColumnCount() && column >= 0) {
+            Object value = tbl_prestamos.getValueAt(row, column);
+            if (value instanceof JButton) {
+                ((JButton) value).doClick();
+                JButton boton = (JButton) value;
+
+                if (boton.getName().equals("pagar") && boton.getText().equals("Pagar")) {
+                    int opc = JOptionPane.showConfirmDialog(null, "Desea pagar la cuota", "Confirmar", JOptionPane.OK_CANCEL_OPTION);
+                    switch (opc) {
+                        case 0:
+
+
+//                            else if (!totalp.getList_prestamos().get(row - 1).isPagada()) {
+//                                JOptionPane.showMessageDialog(null, "Debe pagar la anterior");
+//                            }
+                            break;
+                        case 1:
+                            System.out.println(row);
+                            break;
+
+                    }
+
+                    //EVENTOS ELIMINAR
+                }
+            }
+
+        }
+    }//GEN-LAST:event_tbl_prestamosMouseClicked
+
+     public void block() {
+        btn_aprobar.setEnabled(false);
+        cTemp.clear();
+    }
+
+    public void stop(boolean b) {
+        btn_proyectar.setEnabled(b);
+        txt_plazo.setEnabled(b);
+        txt_interes.setEnabled(b);
+        txt_valor.setEnabled(b);
+    }
+
+    public void quemados() {
+        totalp.getList_asociados().add(new Asociado(UUID.randomUUID() + "", "Hector Herrera", 1000000, "sinPrestamo"));
+        totalp.getList_asociados().add(new Asociado(UUID.randomUUID() + "", "Daniela Osorio", 500000, "sinPrestamo"));
+        totalp.getList_asociados().add(new Asociado(UUID.randomUUID() + "", "José Chico", 1500000, "sinPrestamo"));
+        totalp.getList_asociados().add(new Asociado(UUID.randomUUID() + "", "Christian Castilla", 2500000, "sinPrestamo"));
+        totalp.getList_asociados().add(new Asociado(UUID.randomUUID() + "", "Tupac Lopez", 5350000, "sinPrestamo"));
+        totalp.getList_asociados().add(new Asociado(UUID.randomUUID() + "", "Indian Malah", 805000, "sinPrestamo"));
+    }
+
+    public void vaciar() {
+        txt_Asociado.setText("");
+        txt_interes.setText("");
+        txt_plazo.setText("");
+        txt_valor.setText("");
+        txt_valorTotal.setText("");
+        block();
+    }
+
+    public void Listar() {
+
+        listar_asociados(
+                totalp.getList_asociados().size(),
+                0,
+                (DefaultTableModel) tbl_asociados.getModel(),
+                totalp.getList_asociados()
+        );
+
+    }
+    public void listar2(Asociado a1) {
+
+        tbl_prestamos.setDefaultRenderer(Object.class, new render());
+
+        listar_prestamos(
+                totalp.getList_prestamos().size(),
+                0,
+                (DefaultTableModel) tbl_prestamos.getModel(),
+                totalp.getList_prestamos(),
+                a1
+        );
+    }
+      public static void listar_asociados(int limit, int i, DefaultTableModel tb1, Vector<Asociado> arr) {
+        if (i == 0) {
+            tb1.setNumRows(0);
+        }
+
+        tb1.addRow(new Object[]{
+            arr.get(i).getCodigo(),
+            arr.get(i).getNombre(),
+            arr.get(i).getSalario()
+        });
+
+        //incremento
+        i++;
+        //repetir
+        if (i < limit) {
+            listar_asociados(limit, i, tb1, arr);
+        }
+    }
+
+    public static void listar_prestamos(int limit, int i, DefaultTableModel tb1, Vector<Cuota> arr, Asociado a1) {
+
+        if (i == 0) {
+            tb1.setNumRows(0);
+        }
+
+        if (arr.size() > 0) {
+
+            JButton btnPagar = new JButton((arr.get(i).isPagada()) ? "Pagada" : "Pagar");
+            btnPagar.setName("pagar");
+            btnPagar.setEnabled(!arr.get(i).isPagada());
+            btnPagar.setBackground((arr.get(i).isPagada()) ? Color.green : Color.red);
+
+            if (arr.get(i).getPres1().getA1().getCodigo().equals(a1.getCodigo())) {
+                tb1.addRow(new Object[]{
+                    arr.get(i).getNcuota(),
+                    arr.get(i).getValorCuota(),
+                    arr.get(i).getValorPagar(),
+                    arr.get(i).getSaldo(),
+                    btnPagar
+                });
+            }
+        }
+        //incremento
+        i++;
+        //repetir
+        if (i < limit) {
+            listar_prestamos(limit, i, tb1, arr, a1);
+        }
+    }
 
     /**
      * @param args the command line arguments
@@ -308,22 +570,21 @@ public class VistaAsociado extends javax.swing.JFrame {
             }
         });
     }
-    
-    DefaultTableModel dtma=new DefaultTableModel();
-    DefaultTableModel dtmc= new DefaultTableModel();
-     Asociado ast= new Asociado();
-    
+
+    DefaultTableModel dtma = new DefaultTableModel();
+    DefaultTableModel dtmc = new DefaultTableModel();
+    Asociado ast = new Asociado();
+
 //    public void consultar(){
 //        
 //        for(int i=0;i<){
 //            
 //        }
-        
 //    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnaprobar;
-    private javax.swing.JButton btnproyectar;
+    private javax.swing.JButton btn_aprobar;
+    private javax.swing.JButton btn_proyectar;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -335,13 +596,13 @@ public class VistaAsociado extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTable jTable3;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
-    private javax.swing.JTable tabla1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTable tbl_asociados;
+    private javax.swing.JTable tbl_prestamos;
+    private javax.swing.JTextField txt_Asociado;
+    private javax.swing.JTextField txt_interes;
+    private javax.swing.JTextField txt_plazo;
+    private javax.swing.JTextField txt_valor;
+    private javax.swing.JTextField txt_valorTotal;
     // End of variables declaration//GEN-END:variables
 }

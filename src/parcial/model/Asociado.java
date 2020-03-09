@@ -11,13 +11,10 @@ package parcial.model;
  */
 public class Asociado {
     
-    private String codigo;
+        private String codigo;
     private String nombre;
     private double salario;
     private String estado;
-
-    public Asociado() {
-    }
 
     public Asociado(String codigo, String nombre, double salario, String estado) {
         this.codigo = codigo;
@@ -25,64 +22,41 @@ public class Asociado {
         this.salario = salario;
         this.estado = estado;
     }
-    
-    
 
-    /**
-     * @return the codigo
-     */
+    public Asociado() {        
+    }
+    
+    
     public String getCodigo() {
         return codigo;
     }
 
-    /**
-     * @param codigo the codigo to set
-     */
     public void setCodigo(String codigo) {
         this.codigo = codigo;
     }
 
-    /**
-     * @return the nombre
-     */
     public String getNombre() {
         return nombre;
     }
 
-    /**
-     * @param nombre the nombre to set
-     */
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
 
-    /**
-     * @return the salario
-     */
     public double getSalario() {
         return salario;
     }
 
-    /**
-     * @param salario the salario to set
-     */
     public void setSalario(double salario) {
         this.salario = salario;
     }
 
-    /**
-     * @return the estado
-     */
     public String getEstado() {
         return estado;
     }
 
-    /**
-     * @param estado the estado to set
-     */
     public void setEstado(String estado) {
         this.estado = estado;
     }
-    
     
 }
